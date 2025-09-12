@@ -1,0 +1,14 @@
+# Playwright pour automatiser la connexion et l'export PDF
+playwright>=1.47.0
+
+# YAML pour charger/enregistrer les configs
+pyyaml>=6.0.2
+
+# Manipulation des PDF
+pypdf>=4.2.0
+
+# Génération de PDF (texte, images, overlay)
+reportlab>=4.2.2
+
+# Gestion des fuseaux horaires (utile si zoneinfo indisponible)
+pytz>=2024.1
