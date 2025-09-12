@@ -249,7 +249,7 @@ def export_pdf_like_dialog(page, pdf_path: str):
 # Orchestration principale
 # =========================
 def export_agenda_pdf(cfg):
-    pass_url   = cfg["pass_url"]
+    pass_url   = cfg["agenda_url"]
     username   = cfg["username"]
     password   = cfg["password"]
     pdf_out    = cfg.get("pdf_out", "agenda.pdf")
@@ -407,6 +407,6 @@ def get_storage_state(context):
 # Main
 # =========================
 if __name__ == "__main__":
-    cfg = load_cfg("old/conf.yaml")
+    cfg = load_cfg("conf.yaml")
     out = export_agenda_pdf(cfg)
     print(f"✅ PDF final: {out}")
