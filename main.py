@@ -14,12 +14,17 @@ def ask_user_inputs():
     root = tk.Tk()
     root.withdraw()  # on cache la fenêtre principale
 
-    messagebox.showinfo("Configuration requise",
-                        "Bienvenue ! C'est la première utilisation.\n"
-                        "Veuillez remplir vos informations pour configurer l'application.")
+    messagebox.showinfo(
+        "Configuration requise",
+        "Bienvenue ! Première utilisation.\nVeuillez renseigner les informations pour configurer l'application."
+    )
 
     # Champs pour conf.yaml (export PASS)
-    agenda_url = simpledialog.askstring("PASS", "URL du portail PASS :", initialvalue="https://pass.imt-atlantique.fr/")
+    pass_url = simpledialog.askstring(
+        "PASS",
+        "URL du portail PASS :",
+        initialvalue="https://pass.imt-atlantique.fr/OpDotNet/Noyau/Login.aspx?"
+    )
     username = simpledialog.askstring("PASS", "Identifiant :", parent=root)
     password = simpledialog.askstring("PASS", "Mot de passe :", show="*", parent=root)
 
@@ -28,18 +33,23 @@ def ask_user_inputs():
     prenom = simpledialog.askstring("Annotation", "Prénom :", parent=root)
     site_lettre = simpledialog.askstring("Annotation", "Site (B/R/N) :", initialvalue="B", parent=root)
     ville = simpledialog.askstring("Annotation", "Ville :", initialvalue="Brest", parent=root)
-    texte_certif = simpledialog.askstring("Annotation", "Texte de certification :",
-                                          initialvalue="Certifie sur l’honneur avoir été présent(e) sur les créneaux indiqués dans le planning")
+    texte_certif = simpledialog.askstring(
+        "Annotation",
+        "Texte de certification :",
+        initialvalue="Certifie sur l’honneur avoir été présent(e) sur les créneaux indiqués dans le planning"
+    )
 
-    signature_path = filedialog.askopenfilename(title="Choisissez votre image de signature (PNG)",
-                                                filetypes=[("Images PNG", "*.png")])
+    signature_path = filedialog.askopenfilename(
+        title="Choisissez votre image de signature (PNG)",
+        filetypes=[("Images PNG", "*.png")]
+    )
     sig_height = simpledialog.askinteger("Annotation", "Taille de la signature (pt)", initialvalue=60)
     sig_x_offset = simpledialog.askinteger("Annotation", "Décalage horizontal (pt)", initialvalue=-370)
     sig_y_offset = simpledialog.askinteger("Annotation", "Décalage vertical (pt)", initialvalue=0)
 
-    # Sauvegarde YAML conf.yaml
+    # Sauvegarde YAML conf.yaml (⚠️ clé correcte: pass_url)
     conf_pass = {
-        "agenda_url": agenda_url,
+        "pass_url": pass_url,
         "username": username,
         "password": password,
         "pdf_out": "agenda.pdf"
@@ -65,7 +75,10 @@ def ask_user_inputs():
     with open(CONF_ANNOT, "w", encoding="utf-8") as f:
         yaml.safe_dump(conf_annot, f, allow_unicode=True)
 
-    messagebox.showinfo("Configuration enregistrée", "Vos paramètres ont été sauvegardés.\nVous pouvez relancer l'application.")
+    messagebox.showinfo(
+        "Configuration enregistrée",
+        "Vos paramètres ont été sauvegardés.\nRelancez l'application pour exécuter le workflow."
+    )
 
 def run_script(script, args=None):
     """Exécute un script Python séparé avec subprocess"""
@@ -79,16 +92,17 @@ def run_script(script, args=None):
         sys.exit(result.returncode)
 
 def main():
-    # Si les fichiers de config n'existent pas → demander via GUI
+    # Première utilisation : créer les configs puis STOP
     if not CONF_PASS.exists() or not CONF_ANNOT.exists():
         ask_user_inputs()
+        # Arrêt immédiat après création des fichiers de config
+        sys.exit(0)
 
-    # 1. Export agenda (script Playwright)
+    # Exécutions suivantes : lancer les deux scripts
     export_script = BASE_DIR / "Dev-PDF_EDT.py"
-    run_script(export_script, [str(CONF_PASS)])
+    annot_script = BASE_DIR / "refactor_pdf.py"  # adapte si ton fichier a un autre nom
 
-    # 2. Annotation/signature
-    annot_script = BASE_DIR / "refactor_pdf.py"
+    run_script(export_script, [str(CONF_PASS)])
     run_script(annot_script, [str(CONF_ANNOT)])
 
     print("✅ Workflow terminé : export + annotation OK")
