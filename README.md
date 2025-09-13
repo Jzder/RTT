@@ -55,7 +55,6 @@ python main.py
 	•	ton nom, prénom, site (B, R ou N), ville,
 	•	ton texte de certification (ex: Certifie sur l’honneur avoir été présent(e) sur les créneaux indiqués dans le planning),
 	•	ton image de signature (.png).
- 	•	l'endroit où enregistrer le fichier pdf 
 
 Ces informations sont sauvegardées dans conf.yaml et conf_annot.yaml.
 Ensuite le programme s’arrête → relance-le pour exécuter le workflow.
