@@ -249,7 +249,7 @@ def export_pdf_like_dialog(page, pdf_path: str):
 # Orchestration principale
 # =========================
 def export_agenda_pdf(cfg):
-    pass_url   = cfg["agenda_url"]
+    pass_url   = cfg["pass_url"]
     username   = cfg["username"]
     password   = cfg["password"]
     pdf_out    = cfg.get("pdf_out", "agenda.pdf")
